@@ -1,0 +1,20 @@
+<?php
+/**
+ * Created by JiangMingyu.
+ * User: JiangMingyu
+ * E-mail: jmingyu@qq.com
+ * Date: 2017/5/20/020
+ * Time: 22:10
+ */
+//伪造随机ip
+class fackip{
+
+    public function ip(){
+        $one=rand(128,191);
+        $two=rand(1,255);
+        $three=rand(1,255);
+        $four=rand(1,255);
+        return $one.".".$two.".".$three.".".$four;
+    }
+
+}
