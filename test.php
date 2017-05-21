@@ -26,10 +26,14 @@ function curl_get($url,$cycle)
     $agent = "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/57.0.2987.110 Safari/537.36";
     $ch = curl_init();
     $timeout = 5;
+    $ip=fackip::ip();
+//    $cip = '123.125.68.'.mt_rand(0,254);
+//    $xip = '125.90.88.'.mt_rand(0,254);
     $fackip=array(
-        'CLIENT-IP:'.$this->ip(),
-        'X-FORWARDED-FOR:'.$this->ip(),
+        'CLIENT-IP:'.$ip,
+        'X-FORWARDED-FOR:'.$ip,
     );
+//    var_dump($fackip);
     curl_setopt($ch, CURLOPT_USERAGENT,$agent);
     curl_setopt ($ch, CURLOPT_URL, $url);
     curl_setopt ($ch, CURLOPT_RETURNTRANSFER, 1);
@@ -37,7 +41,11 @@ function curl_get($url,$cycle)
     curl_setopt ($ch, CURLOPT_HTTPHEADER , $fackip);
     $file_contents = curl_exec($ch);
     curl_close($ch);
-
+    var_dump($file_contents);
+    if(!$file_contents){
+        echo '服务器拒绝';
+        exit;
+    }
     //设置规则
     $rules = array(
         //采集id为one这个元素里面的纯文本内容
@@ -61,14 +69,15 @@ function curl_get($url,$cycle)
     );
     $next = $query->Query($file_contents,$rules)->data;
     $t2 = microtime(true);//记录程序结束时间
-    $cycle++;
-    echo '第'.$cycle.'次循环....';
-    echo '执行时间'.round($t2-$t1,5)."s\n";//生成信息
-//    if($cycle%5==0){
-//        sleep(2);//每五次休息2秒
-//    }
-
-    curl_get($next[0]['next'],$cycle);
+    echo $data;
+//    $cycle++;
+//    echo '第'.$cycle.'次循环....';
+//    echo '执行时间'.round($t2-$t1,5)."s\n";//生成信息
+////    if($cycle%5==0){
+////        sleep(2);//每五次休息2秒
+////    }
+//
+//    curl_get($next[0]['next'],$cycle);
 }
 
 

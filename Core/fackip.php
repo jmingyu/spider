@@ -11,9 +11,9 @@ class fackip{
 
     public function ip(){
         $one=rand(128,191);
-        $two=rand(1,255);
-        $three=rand(1,255);
-        $four=rand(1,255);
+        $two=rand(1,254);
+        $three=rand(1,254);
+        $four=rand(1,254);
         return $one.".".$two.".".$three.".".$four;
     }
 
