@@ -64,28 +64,27 @@ function curl_get($url,$cycle)
     $query=new \QL\QueryList();
 //    $data = $query->Query($file_contents,$rules)->data;
     $data = $query->Query($file_contents,$rules,'','UTF-8','GB2312')->data;
-    var_dump($data);
-//    foreach($data as $v){
-//        if(!isset($v['title'])){
-//            continue;
-//        }
-//        $v['local']=trim ( $v['local'] );
-//        $GLOBALS['db']->anjuke_zu()->insert($v);//入库
-//    }
-//    $rules = array(
-//        'next' => array('.aNxt','href'),
-//    );
-//    $next = $query->Query($file_contents,$rules)->data;//下一页的地址
-//    $t2 = microtime(true);//记录程序结束时间
-//    $cycle++;
-//    echo '第'.$cycle.'次循环....';
-//    echo '执行时间'.round($t2-$t1,5)."s\n";//生成信息
+    foreach($data as $v){
+        if(!isset($v['title'])){
+            continue;
+        }
+        $v['local']=trim ( $v['local'] );
+        $GLOBALS['db']->anjuke_zu()->insert($v);//入库
+    }
+    $rules = array(
+        'next' => array('.aNxt','href'),
+    );
+    $next = $query->Query($file_contents,$rules)->data;//下一页的地址
+    $t2 = microtime(true);//记录程序结束时间
+    $cycle++;
+    echo '第'.$cycle.'次循环....';
+    echo '执行时间'.round($t2-$t1,5)."s\n";//生成信息
 //    if($cycle%5==0){
 //        sleep(2);//每五次休息2秒
 //    }
 //    sleep(2);//每次休息2秒
 
-//    curl_get($next[0]['next'],$cycle);
+    curl_get($next[0]['next'],$cycle);
 }
 
 
