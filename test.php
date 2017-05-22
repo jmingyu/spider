@@ -7,6 +7,7 @@
  */
 define('ROOT',dirname(__FILE__).'/');
 ini_set("memory_limit", "1024M");
+header("Content-Type:text/html;charset=utf-8");
 //require('lib/phpQuery/phpQuery.php');
 require ('lib/QueryList/vendor/autoload.php');
 require ('config/config.php');//数据库配置
@@ -26,9 +27,11 @@ function curl_get($url,$cycle)
     $agent = "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/57.0.2987.110 Safari/537.36";
     $ch = curl_init();
     $timeout = 5;
-    $ip=fackip::ip();
+    $fack=new fackip();
+    $ip=$fack->ip();
 //    $cip = '123.125.68.'.mt_rand(0,254);
 //    $xip = '125.90.88.'.mt_rand(0,254);
+//    var_dump($ip);exit;
     $fackip=array(
         'CLIENT-IP:'.$ip,
         'X-FORWARDED-FOR:'.$ip,
@@ -41,7 +44,10 @@ function curl_get($url,$cycle)
     curl_setopt ($ch, CURLOPT_HTTPHEADER , $fackip);
     $file_contents = curl_exec($ch);
     curl_close($ch);
-    var_dump($file_contents);
+//    var_dump($file_contents);
+//    $char=mb_detect_encoding($file_contents, array('ASCII','GB2312',"GBK",'UTF-8'));//识别字符串编码
+//    $file_contents=mb_convert_encoding($file_contents, "UTF-8", "auto");
+//    $file_contents=iconv("UTF-8", $char."//IGNORE", $file_contents) ;//转换字符串编码
     if(!$file_contents){
         echo '服务器拒绝';
         exit;
@@ -56,27 +62,29 @@ function curl_get($url,$cycle)
         'link'   => array('.zu-info>h3>a','href'),
     );
     $query=new \QL\QueryList();
-    $data = $query->Query($file_contents,$rules)->data;
-    foreach($data as $v){
-        if(!isset($v['title'])){
-            continue;
-        }
-        $v['local']=trim ( $v['local'] );
-        $GLOBALS['db']->anjuke_zu()->insert($v);//入库
-    }
-    $rules = array(
-        'next' => array('.aNxt','href'),
-    );
-    $next = $query->Query($file_contents,$rules)->data;
-    $t2 = microtime(true);//记录程序结束时间
-    echo $data;
+//    $data = $query->Query($file_contents,$rules)->data;
+    $data = $query->Query($file_contents,$rules,'','UTF-8','GB2312')->data;
+    var_dump($data);
+//    foreach($data as $v){
+//        if(!isset($v['title'])){
+//            continue;
+//        }
+//        $v['local']=trim ( $v['local'] );
+//        $GLOBALS['db']->anjuke_zu()->insert($v);//入库
+//    }
+//    $rules = array(
+//        'next' => array('.aNxt','href'),
+//    );
+//    $next = $query->Query($file_contents,$rules)->data;//下一页的地址
+//    $t2 = microtime(true);//记录程序结束时间
 //    $cycle++;
 //    echo '第'.$cycle.'次循环....';
 //    echo '执行时间'.round($t2-$t1,5)."s\n";//生成信息
-////    if($cycle%5==0){
-////        sleep(2);//每五次休息2秒
-////    }
-//
+//    if($cycle%5==0){
+//        sleep(2);//每五次休息2秒
+//    }
+//    sleep(2);//每次休息2秒
+
 //    curl_get($next[0]['next'],$cycle);
 }
 
